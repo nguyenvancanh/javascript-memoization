@@ -86,5 +86,74 @@ function fibonacci(n) {
 }
 ```
 
-Đơn giản, ngắn gọn và vô cùng chính xác. Nhưng vấn đề ở đay ra, khi n lớn, thì chúng ta phải gọi lại liên tục tới function của số fibonaci trước đó (n -1), cho tới khi chúng ta gọi tới được method tính dãy fibonaci của n = 1, hoặc n = 0 (những số mà chúng ta đã biết chính xác giá trị của nó). Điều này gọi là tính toán dư thừa, và Memozation sẽ loại bỏ hoàn toàn vấn đề này
+Đơn giản, ngắn gọn và vô cùng chính xác. Nhưng vấn đề ở đay ra, khi n lớn, thì chúng ta phải gọi lại liên tục tới function của số fibonaci trước đó (n -1), cho tới khi chúng ta gọi tới được method tính dãy fibonaci của n = 1, hoặc n = 0 (những số mà chúng ta đã biết chính xác giá trị của nó). Điều này gọi là tính toán dư thừa, và Memozation sẽ loại bỏ hoàn toàn vấn đề này. 
+
+Viết lại method trên có sử dụng Memozation như sau:
+
+```
+function fibonacci(n,memo) {
+    memo = memo || {}
+    if (memo[n]) {
+        return memo[n]
+    }
+    if (n <= 1) {
+        return 1
+    }
+    return memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo)
+}
+```
+
+Đọc code, các bạn có thể thấy, trong hàm mới này, chúng ta đã khởi tạo một biến memo ở đầu function, ngay đầu function, chúng ta đã kiểm tra nếu trong biến memo, tại phần tử thứ n, thì trả lại giá trị của memo tại vị trí thứ n. Nếu không thì gán gía trị thứ n của biến memo bằng dãy fibonaci của phần tử thứ n-1 và thứ n - 2.
+
+Để kiếm chứng tính hiệu quả của Memozation thì các bạn có thể vào link sau [https://jsperf.com/scotch-memoization-test](https://jsperf.com/scotch-memoization-test) và chạy thử kết quả tính dãy Fibonacci với n = 20.
+
+**A Functional Approach**
+
+Trong đoạn code dưới đây, chúng ta sẽ tạo ra một hide order function với tên là memozier. Với function này, chúng ta có thể dễ dàng gọi ghi nhớ ở bất kỳ đâu
+
+```
+function memoizer(fun){
+    let cache = {}
+    return function (n){
+        if (cache[n] != undefined ) {
+          return cache[n]
+        } else {
+          let result = fun(n)
+          cache[n] = result
+          return result
+        }
+    }
+}
+```
+
+Chúng ta tạo ra một function mới với tên là memoizer, và nó chấp nhận tham số truyền vào là một function với tên gọi là fun. Trong function tạo một object để lưu trữ dữ liệu của method với tên là cache.
+
+Kết quả trả về là một result được truy xuất dữ liệu từ biến cache. 
+
+Để áp dụng function mới, chúng ta gọi nó như sau:
+
+```
+const fibonacciMemoFunction = memoizer(fibonacciRecursive)
+```
+
+**Khi nào cần Memoize một function?**
+
+Một vài trường hợp mà Memoize sẽ có ích đó là:
+
+- Đối với nhưng function tính toàn mất nhiều thời gian, hay flow phức tạp, tính toán qua nhiều bước, nhiều thao tác
+
+- Đối với các hàm gọi đệ quy, hoặc các hàm có giá trị đầu vào không thay đổi
+
+- Đối với những hàm được trả về cùng một kết quả đầu ra mỗi lần nó được gọi với một đầu vào cụ thể
+
+**Một sốt thư viện Memoizer**
+
+Một số thư viện hỗ trợ sẵn cho chúng ta việc ghi nhớ trong javascript có thể kể tới như
+
+- Lodash
+
+- Memoizer
+- Fastmemoize
+- Moize
+- Reselect for Redux
 
