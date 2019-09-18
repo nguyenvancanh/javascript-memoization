@@ -151,9 +151,47 @@ Một vài trường hợp mà Memoize sẽ có ích đó là:
 Một số thư viện hỗ trợ sẵn cho chúng ta việc ghi nhớ trong javascript có thể kể tới như
 
 - Lodash
-
 - Memoizer
 - Fastmemoize
 - Moize
 - Reselect for Redux
 
+Trong tất cả các thư viện trên, thì có lẽ Lodash là phổ biến với mọi lập trình viên hơn cả, tôi xin đề cập thêm một chút về function memoize được tích hợp sẵn trong Lodash
+
+Bạn có thể gọi hàm memoize của lodash bằng cách sau
+
+```
+_.memoize(func, [resolver])
+```
+
+- Function này sẽ ghi nhớ lại kết quả của function func (tham số được truyền vào)
+
+- Nếu tham số resolver được khai báo, hàm này sẽ xác định cache key để lưu trữ dữ liệu, dựa trên function tham số đầu vào của hàm memoize
+
+- Trường hợp default thì sẽ được lưu trữ dưới dạng map cache ke.
+
+Bạn có thể theo dõi ví dụ sau:
+
+```
+var object = { 'a': 1, 'b': 2 };
+var other = { 'c': 3, 'd': 4 };
+ 
+var values = _.memoize(_.values);
+values(object);
+// => [1, 2]
+ 
+values(other);
+// => [3, 4]
+ 
+object.a = 2;
+values(object);
+// => [1, 2]
+ 
+// Modify the result cache.
+values.cache.set(object, ['a', 'b']);
+values(object);
+// => ['a', 'b']
+ 
+// Replace `_.memoize.Cache`.
+_.memoize.Cache = WeakMap;
+```
